@@ -1,132 +1,267 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Broadcast — Facebook Post Title, Description &amp; Hashtag Generator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Video Link Downloader</title>
 <style>
   :root{
-    --ink:#14171C;
-    --ink-soft:#1D2129;
-    --paper:#FBF8F2;
-    --paper-dim:#EFEAE0;
-    --amber:#F5A623;
-    --amber-dim:#7A5613;
-    --teal:#2BB3A3;
-    --text-light:#EDEAE1;
-    --text-mute:#9AA0AC;
-    --line: rgba(237,234,225,0.12);
-    --radius: 3px;
+    --bg:#0b0f14;
+    --panel:#121821;
+    --panel-border:#1f2937;
+    --text:#e6edf3;
+    --muted:#8a97a8;
+    --accent:#4fd1c5;
+    --accent-dim:#2c7a72;
+    --danger:#ff6b6b;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
   body{
-    background:var(--ink);
-    color:var(--text-light);
-    font-family:'Inter',sans-serif;
-    line-height:1.5;
-    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(79,209,197,0.10), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
   }
-  a{color:inherit;}
-  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
-
-  /* ---------- NAV ---------- */
-  header.nav{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:28px 0;
-    border-bottom:1px solid var(--line);
-  }
-  .brand{
-    display:flex; align-items:center; gap:10px;
-    font-family:'Big Shoulders Display', sans-serif;
-    font-weight:800; font-size:22px; letter-spacing:0.5px;
-    text-transform:uppercase;
-  }
-  .brand .dot{
-    width:9px; height:9px; border-radius:50%; background:var(--amber);
-    box-shadow:0 0 0 4px rgba(245,166,35,0.15);
-    animation:pulse 1.8s infinite;
-  }
-  @keyframes pulse{
-    0%,100%{box-shadow:0 0 0 4px rgba(245,166,35,0.15);}
-    50%{box-shadow:0 0 0 8px rgba(245,166,35,0.05);}
-  }
-  .nav-tag{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px; color:var(--text-mute);
-    letter-spacing:0.08em;
-  }
-
-  /* ---------- HERO ---------- */
-  .hero{padding:64px 0 40px;}
-  .eyebrow{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px; letter-spacing:0.15em; text-transform:uppercase;
-    color:var(--amber); margin-bottom:18px;
-    display:flex; align-items:center; gap:10px;
-  }
-  .eyebrow::before{content:"ON AIR"; border:1px solid var(--amber); padding:3px 8px; border-radius:2px; font-size:10px;}
-  h1{
-    font-family:'Big Shoulders Display', sans-serif;
-    font-weight:900;
-    font-size:clamp(40px, 6.4vw, 78px);
-    line-height:0.96;
-    letter-spacing:-0.01em;
-    text-transform:uppercase;
-    max-width:820px;
-  }
-  h1 span{color:var(--amber);}
-  .sub{
-    margin-top:22px;
+  .frame{
+    width:100%;
     max-width:560px;
-    font-size:17px;
-    color:var(--text-mute);
   }
-
-  /* ---------- GENERATOR CARD ---------- */
-  .studio{
-    margin-top:52px;
-    background:var(--paper);
-    color:var(--ink);
-    border-radius:6px;
-    padding:36px;
-    box-shadow:0 30px 80px -30px rgba(0,0,0,0.6);
-    position:relative;
-    overflow:hidden;
+  .eyebrow{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--muted);
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:10px;
   }
-  .studio::before{
-    content:"";
-    position:absolute; top:0; left:0; right:0; height:5px;
-    background:repeating-linear-gradient(90deg, var(--amber) 0 18px, transparent 18px 26px);
+  .eyebrow .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--accent);
+    box-shadow:0 0 12px var(--accent);
   }
-  .studio-head{
-    display:flex; align-items:center; justify-content:space-between;
-    margin-bottom:22px; flex-wrap:wrap; gap:12px;
+  h1{
+    font-size:28px;
+    margin:0 0 6px 0;
+    font-weight:700;
+    line-height:1.3;
   }
-  .studio-label{
-    font-family:'IBM Plex Mono', monospace;
-    font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
-    color:var(--amber-dim);
-    display:flex; align-items:center; gap:8px;
-  }
-  .live-dot{width:7px;height:7px;border-radius:50%; background:#D64545; animation:pulse2 1.4s infinite;}
-  @keyframes pulse2{0%,100%{opacity:1;}50%{opacity:0.3;}}
-
-  .form-row{display:flex; gap:14px; flex-wrap:wrap;}
-  .field{flex:1 1 260px; display:flex; flex-direction:column; gap:8px;}
-  label{font-size:12px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:#5b5849;}
-  input[type=text], select{
-    font-family:'Inter', sans-serif;
+  p.sub{
+    color:var(--muted);
+    margin:0 0 28px 0;
     font-size:15px;
-    padding:13px 14px;
-    border:1.5px solid #DAD3C2;
-    border-radius:3px;
-    background:#fff;
-    color:var(--ink);
+    line-height:1.6;
   }
-  input[type=text]:focus, select:focus{outline:2px solid var(--amber); border-color:var(--amber);}
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.35);
+  }
+  label{
+    display:block;
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:8px;
+  }
+  input[type="text"]{
+    width:100%;
+    padding:14px 14px;
+    background:#0d1219;
+    border:1px solid var(--panel-border);
+    border-radius:10px;
+    color:var(--text);
+    font-size:15px;
+    outline:none;
+    transition:border-color 0.15s ease;
+    direction:ltr;
+  }
+  input[type="text"]:focus{
+    border-color:var(--accent);
+  }
+  input[type="text"]::placeholder{
+    color:#4a5568;
+  }
+  .row{
+    display:flex;
+    gap:10px;
+    margin-top:16px;
+  }
+  button{
+    flex:1;
+    padding:14px 18px;
+    border-radius:10px;
+    border:none;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 0.08s ease, opacity 0.15s ease;
+  }
+  button:active{transform:scale(0.98);}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--accent), var(--accent-dim));
+    color:#04120f;
+  }
+  .btn-primary:hover{opacity:0.92;}
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--panel-border);
+    color:var(--muted);
+    flex:0 0 auto;
+  }
+  .btn-ghost:hover{color:var(--text); border-color:var(--accent-dim);}
+  .status{
+    margin-top:16px;
+    font-size:13.5px;
+    line-height:1.6;
+    padding:12px 14px;
+    border-radius:10px;
+    display:none;
+  }
+  .status.show{display:block;}
+  .status.info{background:rgba(79,209,197,0.08); color:var(--accent); border:1px solid rgba(79,209,197,0.25);}
+  .status.error{background:rgba(255,107,107,0.08); color:var(--danger); border:1px solid rgba(255,107,107,0.25);}
+  .preview{
+    margin-top:16px;
+    display:none;
+  }
+  .preview.show{display:block;}
+  video{
+    width:100%;
+    border-radius:10px;
+    background:#000;
+    display:block;
+  }
+  .foot-note{
+    margin-top:18px;
+    color:#4a5568;
+    font-size:12.5px;
+    line-height:1.7;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <div class="eyebrow"><span class="dot"></span>VIDEO LINK DOWNLOADER</div>
+    <h1>Apna Video Link Paste Karein</h1>
+    <p class="sub">Direct video link (jo .mp4, .webm ya .mov pe end hota ho) paste karein aur seedha download kar lein.</p>
+
+    <div class="panel">
+      <label for="videoUrl">Video URL</label>
+      <input type="text" id="videoUrl" placeholder="https://example.com/video.mp4" />
+
+      <div class="row">
+        <button class="btn-primary" id="downloadBtn">Download Video</button>
+        <button class="btn-ghost" id="previewBtn">Preview</button>
+      </div>
+
+      <div class="status" id="status"></div>
+
+      <div class="preview" id="previewWrap">
+        <video id="previewVideo" controls></video>
+      </div>
+    </div>
+
+    <p class="foot-note">
+      Note: Ye tool sirf direct video file links ke liye kaam karta hai. Agar link kisi webpage/share page ka hai
+      (video file ka nahi), to download kaam nahi karega — us surat mein PixVerse ya original platform se "Download" wala button use karein.
+    </p>
+  </div>
+
+<script>
+  const urlInput = document.getElementById('videoUrl');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const previewBtn = document.getElementById('previewBtn');
+  const statusEl = document.getElementById('status');
+  const previewWrap = document.getElementById('previewWrap');
+  const previewVideo = document.getElementById('previewVideo');
+
+  function showStatus(msg, type){
+    statusEl.textContent = msg;
+    statusEl.className = 'status show ' + type;
+  }
+
+  function clearStatus(){
+    statusEl.className = 'status';
+    statusEl.textContent = '';
+  }
+
+  function getFileName(url){
+    try{
+      const u = new URL(url);
+      const parts = u.pathname.split('/');
+      let name = parts[parts.length - 1] || 'video.mp4';
+      if(!name.includes('.')) name += '.mp4';
+      return name;
+    }catch(e){
+      return 'video.mp4';
+    }
+  }
+
+  async function handleDownload(){
+    const url = urlInput.value.trim();
+    if(!url){
+      showStatus('Pehle video ka link paste karein.', 'error');
+      return;
+    }
+
+    clearStatus();
+    showStatus('Download shuru ho raha hai... zara sabar karein.', 'info');
+
+    try{
+      const response = await fetch(url, { mode: 'cors' });
+      if(!response.ok) throw new Error('Server ne response nahi diya (status ' + response.status + ')');
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = getFileName(url);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+      showStatus('Download shuru ho gaya hai — check karein aapka downloads folder.', 'info');
+    }catch(err){
+      showStatus('Direct download nahi ho saka (shayad CORS restriction ki wajah se). Neeche wala button dabayein — naya tab khulega, wahan se right-click karke "Save Video As" chunain.', 'error');
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }
+
+  function handlePreview(){
+    const url = urlInput.value.trim();
+    if(!url){
+      showStatus('Pehle video ka link paste karein.', 'error');
+      return;
+    }
+    previewVideo.src = url;
+    previewWrap.className = 'preview show';
+    clearStatus();
+  }
+
+  downloadBtn.addEventListener('click', handleDownload);
+  previewBtn.addEventListener('click', handlePreview);
+  urlInput.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') handleDownload();
+  });
+</script>
+</body>
+</html>
 
   .generate-btn{
     margin-top:22px;
